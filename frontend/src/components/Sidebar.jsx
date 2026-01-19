@@ -113,7 +113,7 @@ function Sidebar({ isOpen, setIsOpen }) {
       { path: "/admin/students", label: "Manage Students", icon: <LuUser /> },
       { path: "/admin/courses", label: "Manage Courses", icon: <AiOutlineBook /> },
       { path: "/admin/notes", label: "Notes", icon: <LuGalleryHorizontalEnd /> },
-      { path: "/admin/settings", label: "Admin Settings", icon: <TbReportAnalytics /> },
+      { path: "/admin/settings", label: "Admin Settings", icon: <MdSettings /> },
     ] : []),
     
     // Instructor items
