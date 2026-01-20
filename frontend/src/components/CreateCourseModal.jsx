@@ -28,6 +28,15 @@ const CreateCourseModal = ({ isOpen, onClose, onSuccess }) => {
       }
     }
     
+    // Validate numeric fields to prevent negative values
+    if (name === 'price') {
+      const numValue = parseFloat(value);
+      if (value !== '' && numValue < 0) {
+        alert('Price must be greater than or equal to 0');
+        return;
+      }
+    }
+    
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -44,6 +53,13 @@ const CreateCourseModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate price is not negative
+    if (parseFloat(formData.price) < 0) {
+      alert('Price must be greater than or equal to 0');
+      return;
+    }
+    
     try {
       // Create course first
       const createRes = await axiosClient.post('/api/admin/courses', formData);
@@ -124,7 +140,7 @@ const CreateCourseModal = ({ isOpen, onClose, onSuccess }) => {
       </div>
       <div>
         <label htmlFor="price" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Price</label>
-        <input id="price" type="number" name="price" placeholder="Price" value={formData.price} onChange={handleChange} required className="form-control" />
+        <input id="price" type="number" name="price" placeholder="Price" value={formData.price} onChange={handleChange} required className="form-control" min="0" step="0.01" />
       </div>
       <div>
         <label htmlFor="status" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Status</label>

@@ -64,11 +64,27 @@ const InstructorCourses = () => {
       }
     }
     
+    // Validate numeric fields to prevent negative values
+    if (name === 'price') {
+      const numValue = parseFloat(value);
+      if (value !== '' && numValue < 0) {
+        alert('Price must be greater than or equal to 0');
+        return;
+      }
+    }
+    
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate price is not negative
+    if (parseFloat(formData.price) < 0) {
+      alert('Price must be greater than or equal to 0');
+      return;
+    }
+    
     try {
       let courseRes;
       if (editingCourse) {
@@ -277,7 +293,9 @@ const InstructorCourses = () => {
                   placeholder="Price" 
                   value={formData.price} 
                   onChange={handleChange} 
-                  className="form-control" 
+                  className="form-control"
+                  min="0"
+                  step="0.01"
                 />
               </div>
               <div>
