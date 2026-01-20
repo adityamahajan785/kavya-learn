@@ -66,36 +66,11 @@ const InstructorCourses = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // Prevent special characters in category field
-    if (name === 'category') {
-      if (/[@#$%!]/.test(value)) {
-        alert('Category cannot contain special characters: @, #, $, %, !');
-        return;
-      }
-    }
-    
-    // Validate numeric fields to prevent negative values
-    if (name === 'price') {
-      const numValue = parseFloat(value);
-      if (value !== '' && numValue < 0) {
-        alert('Price must be greater than or equal to 0');
-        return;
-      }
-    }
-    
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate price is not negative
-    if (parseFloat(formData.price) < 0) {
-      alert('Price must be greater than or equal to 0');
-      return;
-    }
-    
     try {
       let courseRes;
       if (editingCourse) {
@@ -193,31 +168,38 @@ const InstructorCourses = () => {
   return (
     <AppLayout showGreeting={false}>
       <div className="instructor-courses">
+          <h1 className="courses-title">My Courses</h1>
+
         <div className="courses-header">
-          <button 
-            className="back-button" 
-            onClick={() => navigate('/instructor/dashboard')}
-            title="Go back"
-          >
-            <FiArrowLeft /> Back
-          </button>
-          <h1>My Courses</h1>
-          <button className="btn btn-primary" onClick={() => {
-            setEditingCourse(null);
-            setFormData({
-              title: '',
-              description: '',
-              category: '',
-              level: 'Beginner',
-              price: 0,
-              duration: '',
-              thumbnail: ''
-            });
-            setShowForm(!showForm);
-          }}>
-            {showForm ? 'Cancel' : '+ Add Course'}
-          </button>
-        </div>
+  <button 
+    className="back-button" 
+    onClick={() => navigate('/instructor/dashboard')}
+    title="Go back"
+  >
+    <FiArrowLeft /> Back
+  </button>
+
+
+  <button
+    className="btn btn-primary"
+    onClick={() => {
+      setEditingCourse(null);
+      setFormData({
+        title: '',
+        description: '',
+        category: '',
+        level: 'Beginner',
+        price: 0,
+        duration: '',
+        thumbnail: ''
+      });
+      setShowForm(!showForm);
+    }}
+  >
+    {showForm ? 'Cancel' : '+ Add Course'}
+  </button>
+</div>
+
 
         {/* Search controls */}
         <div style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'center' }}>
@@ -291,7 +273,7 @@ const InstructorCourses = () => {
               <input 
                 type="text" 
                 name="duration" 
-                placeholder="Duration (e.g., 10 days)" 
+                placeholder="Duration (e.g., 4 weeks)" 
                 value={formData.duration} 
                 onChange={handleChange} 
                 className="form-control" 

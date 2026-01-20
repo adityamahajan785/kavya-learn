@@ -62,6 +62,9 @@ const InstructorStudents = () => {
       <div style={{ padding: '20px' }}>
         <div className="students-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ marginLeft: '0' }}>
+            <h1 style={{ marginBottom: '20px', fontSize: '28px' }}>Students</h1>
+          </div>
             <button 
               className="back-button" 
               onClick={() => navigate('/instructor/dashboard')}
@@ -80,9 +83,7 @@ const InstructorStudents = () => {
               />
             </div>
           </div>
-          <div style={{ marginLeft: 'auto' }}>
-            <h1 style={{ margin: 0 }}>Students</h1>
-          </div>
+          
         </div>
 
         {/* Student List */}

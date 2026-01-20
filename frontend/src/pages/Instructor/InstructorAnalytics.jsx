@@ -89,7 +89,9 @@ const InstructorAnalytics = () => {
   return (
     <AppLayout showGreeting={false}>
       <div className="instructor-analytics">
+        <div className="analytics-head"><h1>Analytics & Insights</h1></div>
         <div className="analytics-header">
+          
           <button
             className="back-button"
             onClick={() => navigate('/instructor/dashboard')}
@@ -97,7 +99,7 @@ const InstructorAnalytics = () => {
           >
             <FiArrowLeft /> Back
           </button>
-          <h1>Analytics & Insights</h1>
+          
         </div>
 
         {/* Overview Cards */}
