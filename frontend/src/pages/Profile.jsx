@@ -491,39 +491,24 @@ export default function Profile() {
                   alt={profile.name}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
                 />
-              ) : (
-                (profile.gender === 'female') ? (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                    <img 
-                      src={avatarFemale} 
-                      alt="female avatar"
-                      style={{ width: '90%', height: '90%' }}
-                    />
-                  </div>
-                ) : (profile.gender === 'male') ? (
-                  <img
-                    src={profileAvatar}
-                    alt="male avatar"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+              ) : profile.gender === 'female' || effectiveGender === 'female' ? (
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                  <img 
+                    src={avatarFemale} 
+                    alt="female avatar"
+                    style={{ width: '90%', height: '90%' }}
                   />
-                ) : (
-                      // If gender is female (from profile or stored user) show female avatar, else show generic profile image
-                      (effectiveGender === 'female') ? (
-                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                          <img 
-                            src={avatarFemale} 
-                            alt="female avatar"
-                            style={{ width: '90%', height: '90%' }}
-                          />
-                        </div>
-                      ) : (
-                        <img
-                          src={profileAvatar}
-                          alt="profile avatar"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
-                        />
-                      )
-                    )
+                </div>
+              ) : profile.gender === 'male' || effectiveGender === 'male' ? (
+                <img
+                  src={profileAvatar}
+                  alt="male avatar"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                />
+              ) : (
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', fontSize: '18px', fontWeight: 'bold', color: 'white' }}>
+                  {profile.initials}
+                </div>
               )}
             </div>
 
