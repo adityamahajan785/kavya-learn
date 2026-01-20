@@ -150,7 +150,6 @@ const InstructorDashboard = () => {
                     <th>Level</th>
                     <th>Students</th>
                     <th>Lessons</th>
-                    <th>Status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -162,11 +161,6 @@ const InstructorDashboard = () => {
                       <td>{course.level}</td>
                       <td>{course.enrolledStudents?.length || 0}</td>
                       <td>{course.lessons?.length || 0}</td>
-                      <td>
-                        <span className={`badge ${course.isPublished ? 'published' : 'draft'}`}>
-                          {course.isPublished ? 'Published' : 'Draft'}
-                        </span>
-                      </td>
                       <td>
                         <Link to={`/instructor/courses/${course._id}`} className="btn-sm">Edit</Link>
                       </td>
