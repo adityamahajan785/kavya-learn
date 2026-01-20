@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import AppLayout from '../../components/AppLayout';
 import './InstructorCourses.css';
@@ -23,6 +23,7 @@ const InstructorCourses = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const navigate = useNavigate();
+  const { courseId } = useParams();
   const [titleQuery, setTitleQuery] = useState('');
   const [levelFilter, setLevelFilter] = useState('all');
 
@@ -40,7 +41,17 @@ const InstructorCourses = () => {
 
   useEffect(() => {
     loadCourses();
-  }, []);
+  }, [courseId]);
+
+  useEffect(() => {
+    // If courseId is in URL and courses are loaded, find and edit that course
+    if (courseId && courses.length > 0) {
+      const courseToEdit = courses.find(c => c._id === courseId);
+      if (courseToEdit) {
+        handleEdit(courseToEdit);
+      }
+    }
+  }, [courseId, courses]);
 
   const loadCourses = async () => {
     try {
@@ -55,36 +66,11 @@ const InstructorCourses = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // Prevent special characters in category field
-    if (name === 'category') {
-      if (/[@#$%!]/.test(value)) {
-        alert('Category cannot contain special characters: @, #, $, %, !');
-        return;
-      }
-    }
-    
-    // Validate numeric fields to prevent negative values
-    if (name === 'price') {
-      const numValue = parseFloat(value);
-      if (value !== '' && numValue < 0) {
-        alert('Price must be greater than or equal to 0');
-        return;
-      }
-    }
-    
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate price is not negative
-    if (parseFloat(formData.price) < 0) {
-      alert('Price must be greater than or equal to 0');
-      return;
-    }
-    
     try {
       let courseRes;
       if (editingCourse) {
@@ -182,31 +168,38 @@ const InstructorCourses = () => {
   return (
     <AppLayout showGreeting={false}>
       <div className="instructor-courses">
+          <h1 className="courses-title">My Courses</h1>
+
         <div className="courses-header">
-          <button 
-            className="back-button" 
-            onClick={() => navigate('/instructor/dashboard')}
-            title="Go back"
-          >
-            <FiArrowLeft /> Back
-          </button>
-          <h1>My Courses</h1>
-          <button className="btn btn-primary" onClick={() => {
-            setEditingCourse(null);
-            setFormData({
-              title: '',
-              description: '',
-              category: '',
-              level: 'Beginner',
-              price: 0,
-              duration: '',
-              thumbnail: ''
-            });
-            setShowForm(!showForm);
-          }}>
-            {showForm ? 'Cancel' : '+ Add Course'}
-          </button>
-        </div>
+  <button 
+    className="back-button" 
+    onClick={() => navigate('/instructor/dashboard')}
+    title="Go back"
+  >
+    <FiArrowLeft /> Back
+  </button>
+
+
+  <button
+    className="btn btn-primary"
+    onClick={() => {
+      setEditingCourse(null);
+      setFormData({
+        title: '',
+        description: '',
+        category: '',
+        level: 'Beginner',
+        price: 0,
+        duration: '',
+        thumbnail: ''
+      });
+      setShowForm(!showForm);
+    }}
+  >
+    {showForm ? 'Cancel' : '+ Add Course'}
+  </button>
+</div>
+
 
         {/* Search controls */}
         <div style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'center' }}>
@@ -237,91 +230,62 @@ const InstructorCourses = () => {
           }}>
             <h3>{editingCourse ? 'Edit Course' : 'Create New Course'}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-              <div>
-                <label htmlFor="title" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Course Title</label>
-                <input 
-                  id="title"
-                  type="text" 
-                  name="title" 
-                  placeholder="Course Title" 
-                  value={formData.title} 
-                  onChange={handleChange} 
-                  required 
-                  className="form-control" 
-                />
-              </div>
-              <div>
-                <label htmlFor="level" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Level</label>
-                <select id="level" name="level" value={formData.level} onChange={handleChange} className="form-control">
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
-              </div>
-              <div style={{ gridColumn: '1 / -1' }}>
-                <label htmlFor="description" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Description</label>
-                <textarea 
-                  id="description"
-                  name="description" 
-                  placeholder="Description" 
-                  value={formData.description} 
-                  onChange={handleChange} 
-                  required 
-                  className="form-control" 
-                  style={{ minHeight: '100px' }}
-                ></textarea>
-              </div>
-              <div>
-                <label htmlFor="category" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Category</label>
-                <input 
-                  id="category"
-                  type="text" 
-                  name="category" 
-                  placeholder="Category" 
-                  value={formData.category} 
-                  onChange={handleChange} 
-                  required 
-                  className="form-control"
-                />
-              </div>
-              <div>
-                <label htmlFor="price" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Price</label>
-                <input 
-                  id="price"
-                  type="number" 
-                  name="price" 
-                  placeholder="Price" 
-                  value={formData.price} 
-                  onChange={handleChange} 
-                  className="form-control"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-              <div>
-                <label htmlFor="duration" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Duration</label>
-                <input 
-                  id="duration"
-                  type="text" 
-                  name="duration" 
-                  placeholder="Duration (e.g., 4 weeks)" 
-                  value={formData.duration} 
-                  onChange={handleChange} 
-                  className="form-control" 
-                />
-              </div>
-              <div>
-                <label htmlFor="thumbnail" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Thumbnail URL</label>
-                <input 
-                  id="thumbnail"
-                  type="url" 
-                  name="thumbnail" 
-                  placeholder="Thumbnail URL" 
-                  value={formData.thumbnail} 
-                  onChange={handleChange} 
-                  className="form-control" 
-                />
-              </div>
+              <input 
+                type="text" 
+                name="title" 
+                placeholder="Course Title" 
+                value={formData.title} 
+                onChange={handleChange} 
+                required 
+                className="form-control" 
+              />
+              <select name="level" value={formData.level} onChange={handleChange} className="form-control">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+              <textarea 
+                name="description" 
+                placeholder="Description" 
+                value={formData.description} 
+                onChange={handleChange} 
+                required 
+                className="form-control" 
+                style={{ gridColumn: '1 / -1', minHeight: '100px' }}
+              ></textarea>
+              <input 
+                type="text" 
+                name="category" 
+                placeholder="Category" 
+                value={formData.category} 
+                onChange={handleChange} 
+                required 
+                className="form-control" 
+              />
+              <input 
+                type="number" 
+                name="price" 
+                placeholder="Price" 
+                value={formData.price} 
+                onChange={handleChange} 
+                className="form-control" 
+              />
+              <input 
+                type="text" 
+                name="duration" 
+                placeholder="Duration (e.g., 4 weeks)" 
+                value={formData.duration} 
+                onChange={handleChange} 
+                className="form-control" 
+              />
+              <input 
+                type="url" 
+                name="thumbnail" 
+                placeholder="Thumbnail URL" 
+                value={formData.thumbnail} 
+                onChange={handleChange} 
+                className="form-control" 
+              />
               <div style={{ gridColumn: '1 / -1' }}>
                 <label style={{ display: 'block', marginBottom: 6 }}>Upload PDF resource (optional)</label>
                 <input type="file" accept="application/pdf" onChange={handleFileChange} className="form-control" />
@@ -357,7 +321,6 @@ const InstructorCourses = () => {
                   <th style={{ textAlign: 'left', padding: '12px' }}>Price</th>
                   <th style={{ textAlign: 'left', padding: '12px' }}>Students</th>
                   <th style={{ textAlign: 'left', padding: '12px' }}>Lessons</th>
-                  <th style={{ textAlign: 'left', padding: '12px' }}>Status</th>
                   <th style={{ textAlign: 'center', padding: '12px' }}>Actions</th>
                 </tr>
               </thead>
@@ -370,18 +333,6 @@ const InstructorCourses = () => {
                     <td style={{ padding: '12px' }}>₹{course.price}</td>
                     <td style={{ padding: '12px' }}>{course.enrolledStudents?.length || 0}</td>
                     <td style={{ padding: '12px' }}>{course.lessons?.length || 0}</td>
-                    <td style={{ padding: '12px' }}>
-                      <span style={{
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
-                        background: course.isPublished ? '#d4edda' : '#fff3cd',
-                        color: course.isPublished ? '#155724' : '#856404'
-                      }}>
-                        {course.isPublished ? 'Published' : 'Draft'}
-                      </span>
-                    </td>
                     <td style={{ padding: '12px', textAlign: 'center' }}>
                       <button 
                         onClick={() => handleEdit(course)}

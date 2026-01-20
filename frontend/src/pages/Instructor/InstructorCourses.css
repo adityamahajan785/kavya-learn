@@ -1,51 +1,97 @@
+/* ===============================
+   Container
+================================ */
 .instructor-courses {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
+/* ===============================
+   Heading
+================================ */
+.courses-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: left;
+}
+
+/* ===============================
+   Buttons Row (Back + Add Course)
+================================ */
 .courses-header {
   display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
+  align-items: center;       /* 🔑 vertical alignment */
+  gap: 16px;                 /* 🔑 spacing between buttons */
+  width: 100%;
 }
 
+/* ===============================
+   Back Button
+================================ */
 .back-button {
-  display: flex;
+  min-width: 260px;
+  max-width: 320px;
+  height: 48px;              /* 🔑 SAME height as Add button */
+  padding: 0 20px;           /* 🔑 horizontal padding only */
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
-  background: #f0f0f0;
+  background: #f2f2f2;
   border: 1px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: #333;
-  transition: all 0.3s ease;
+  white-space: nowrap;
+  margin: 0;                 /* 🔑 reset bootstrap margins */
 }
 
 .back-button:hover {
-  background: #e0e0e0;
-  border-color: #999;
+  background: #e6e6e6;
+  border-color: #ccc;
 }
 
-.back-button svg {
-  width: 18px;
-  height: 18px;
+/* ===============================
+   Add Course Button
+================================ */
+.courses-header .btn {
+  height: 48px;              /* 🔑 SAME height */
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  margin: 0;                 /* 🔑 reset bootstrap margins */
 }
 
-.instructor-courses h1 {
-  font-size: 28px;
-  margin: 0;
-  color: #333;
+/* ===============================
+   Generic Button Styles
+================================ */
+.btn {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-.instructor-courses h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
+.btn-primary {
+  background: #2b6cb0;
+  color: #fff;
 }
 
+.btn-primary:hover {
+  background: #1e4f7f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.3);
+}
+
+/* ===============================
+   Form Controls (Search, Filters)
+================================ */
 .form-control {
   padding: 10px;
   border: 1px solid #ddd;
@@ -60,28 +106,21 @@
   box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
 }
 
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background: #2b6cb0;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #1e4f7f;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.3);
-}
-
+/* ===============================
+   Responsive (Mobile)
+================================ */
 @media (max-width: 768px) {
-  .instructor-courses form {
-    grid-template-columns: 1fr !important;
+  .courses-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .back-button {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .courses-header .btn {
+    width: 100%;
   }
 }

@@ -211,6 +211,7 @@ const InstructorLessons = () => {
   return (
     <AppLayout showGreeting={false}>
       <div className="instructor-lessons">
+        <div className="lessons-header"><h1>Manage Lessons</h1></div>
         <div className="lessons-header">
           <button
             className="back-button"
@@ -219,7 +220,7 @@ const InstructorLessons = () => {
           >
             <FiArrowLeft /> Back
           </button>
-          <h1>Manage Lessons</h1>
+          
         </div>
 
         {/* Course Filter */}

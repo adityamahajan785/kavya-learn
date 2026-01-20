@@ -9,6 +9,10 @@
   margin-bottom: 30px;
 }
 
+.analytics-head{
+  margin-bottom: 40px;
+}
+
 .back-button {
   display: flex;
   align-items: center;

@@ -108,6 +108,7 @@ function Layout() {
           {/* Instructor Routes */}
           <Route path="/instructor/dashboard" element={<ProtectedRoute requireRole="instructor"><InstructorDashboard /></ProtectedRoute>} />
           <Route path="/instructor/courses" element={<ProtectedRoute requireRole="instructor"><InstructorCourses /></ProtectedRoute>} />
+          <Route path="/instructor/courses/:courseId" element={<ProtectedRoute requireRole="instructor"><InstructorCourses /></ProtectedRoute>} />
           <Route path="/instructor/students" element={<ProtectedRoute requireRole="instructor"><InstructorStudents /></ProtectedRoute>} />
           <Route path="/instructor/lessons" element={<ProtectedRoute requireRole="instructor"><InstructorLessons /></ProtectedRoute>} />
           <Route path="/instructor/analytics" element={<ProtectedRoute requireRole="instructor"><InstructorAnalytics /></ProtectedRoute>} />
