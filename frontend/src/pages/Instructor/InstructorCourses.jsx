@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import AppLayout from '../../components/AppLayout';
 import './InstructorCourses.css';
@@ -23,6 +23,7 @@ const InstructorCourses = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const navigate = useNavigate();
+  const { courseId } = useParams();
   const [titleQuery, setTitleQuery] = useState('');
   const [levelFilter, setLevelFilter] = useState('all');
 
@@ -40,7 +41,17 @@ const InstructorCourses = () => {
 
   useEffect(() => {
     loadCourses();
-  }, []);
+  }, [courseId]);
+
+  useEffect(() => {
+    // If courseId is in URL and courses are loaded, find and edit that course
+    if (courseId && courses.length > 0) {
+      const courseToEdit = courses.find(c => c._id === courseId);
+      if (courseToEdit) {
+        handleEdit(courseToEdit);
+      }
+    }
+  }, [courseId, courses]);
 
   const loadCourses = async () => {
     try {
@@ -310,7 +321,6 @@ const InstructorCourses = () => {
                   <th style={{ textAlign: 'left', padding: '12px' }}>Price</th>
                   <th style={{ textAlign: 'left', padding: '12px' }}>Students</th>
                   <th style={{ textAlign: 'left', padding: '12px' }}>Lessons</th>
-                  <th style={{ textAlign: 'left', padding: '12px' }}>Status</th>
                   <th style={{ textAlign: 'center', padding: '12px' }}>Actions</th>
                 </tr>
               </thead>
@@ -323,18 +333,6 @@ const InstructorCourses = () => {
                     <td style={{ padding: '12px' }}>₹{course.price}</td>
                     <td style={{ padding: '12px' }}>{course.enrolledStudents?.length || 0}</td>
                     <td style={{ padding: '12px' }}>{course.lessons?.length || 0}</td>
-                    <td style={{ padding: '12px' }}>
-                      <span style={{
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
-                        background: course.isPublished ? '#d4edda' : '#fff3cd',
-                        color: course.isPublished ? '#155724' : '#856404'
-                      }}>
-                        {course.isPublished ? 'Published' : 'Draft'}
-                      </span>
-                    </td>
                     <td style={{ padding: '12px', textAlign: 'center' }}>
                       <button 
                         onClick={() => handleEdit(course)}
