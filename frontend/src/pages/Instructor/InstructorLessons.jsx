@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import AppLayout from '../../components/AppLayout';
+import DurationPicker from '../../components/DurationPicker';
 import { FiArrowLeft } from 'react-icons/fi';
 import './InstructorLessons.css';
 
@@ -115,14 +116,18 @@ const InstructorLessons = () => {
         return;
       }
 
-      // Parse duration - extract number from string like "45 min" or "45"
+      // Duration: accept numeric minutes (from HM picker) or parse numeric value from string
       let durationNum = 0;
-      if (formData.duration && formData.duration.trim()) {
-        const match = formData.duration.match(/(\d+(?:\.\d+)?)/);
-        durationNum = match ? Number(match[1]) : 0;
+      if (formData.duration !== undefined && formData.duration !== null && String(formData.duration).trim() !== '') {
+        if (typeof formData.duration === 'number') {
+          durationNum = formData.duration;
+        } else {
+          const match = String(formData.duration).match(/(\d+(?:\.\d+)?)/);
+          durationNum = match ? Number(match[1]) : 0;
+        }
       }
       if (durationNum <= 0) {
-        alert('Please enter a valid duration (e.g., "45" or "45 min").');
+        alert('Please enter a valid duration in minutes (e.g., 1h 30m or 90).');
         return;
       }
 
@@ -293,14 +298,14 @@ const InstructorLessons = () => {
                 onChange={handleInputChange}
                 className="form-control"
               />
-              <input
-                type="text"
-                name="duration"
-                placeholder="Duration (e.g., 45 min)"
-                value={formData.duration}
-                onChange={handleInputChange}
-                className="form-control"
-              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <label style={{ marginRight: 8, color: '#333', minWidth: 80 }}>Duration</label>
+                <DurationPicker
+                  mode="hm"
+                  value={formData.duration}
+                  onChange={(v) => setFormData(prev => ({ ...prev, duration: v }))}
+                />
+              </div>
               <div className="form-buttons">
                 <button type="submit" className="btn btn-success">
                   {editingLesson ? 'Update Lesson' : 'Create Lesson'}

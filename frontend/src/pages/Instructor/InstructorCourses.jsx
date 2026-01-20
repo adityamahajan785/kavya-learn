@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import AppLayout from '../../components/AppLayout';
 import './InstructorCourses.css';
+import DurationPicker from '../../components/DurationPicker';
 import { FiArrowLeft } from 'react-icons/fi';
 
 const InstructorCourses = () => {
@@ -270,14 +271,16 @@ const InstructorCourses = () => {
                 onChange={handleChange} 
                 className="form-control" 
               />
-              <input 
-                type="text" 
-                name="duration" 
-                placeholder="Duration (e.g., 4 weeks)" 
-                value={formData.duration} 
-                onChange={handleChange} 
-                className="form-control" 
-              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <label style={{ marginRight: 8, color: '#333', minWidth: 80 }}>Duration</label>
+                <DurationPicker
+                  mode="units"
+                  selectPosition="right"
+                  showIcon={true}
+                  value={formData.duration}
+                  onChange={(v) => setFormData(prev => ({ ...prev, duration: v }))}
+                />
+              </div>
               <input 
                 type="url" 
                 name="thumbnail" 

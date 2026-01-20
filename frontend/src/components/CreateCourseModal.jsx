@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axiosClient from '../api/axiosClient';
+import DurationPicker from './DurationPicker';
 
 const CreateCourseModal = ({ isOpen, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({ 
@@ -136,7 +137,7 @@ const CreateCourseModal = ({ isOpen, onClose, onSuccess }) => {
       </div>
       <div>
         <label htmlFor="duration" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Duration</label>
-        <input id="duration" type="text" name="duration" placeholder="Duration (e.g., 4 weeks)" value={formData.duration} onChange={handleChange} required className="form-control" />
+        <DurationPicker mode="units" selectPosition="right" showIcon={true} value={formData.duration} onChange={(v) => setFormData(prev => ({ ...prev, duration: v }))} />
       </div>
       <div>
         <label htmlFor="price" style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Price</label>
