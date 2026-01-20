@@ -1415,7 +1415,10 @@ function Schedule() {
                   </div>
 
                   <div className="d-flex gap-2">
-                    {(userRole === 'instructor' || userRole === 'admin') && (
+                    {(userRole === 'admin' || (userRole === 'instructor' && userProfile && userProfile._id && (
+                      (classItem.instructorId && classItem.instructorId.toString() === userProfile._id.toString()) ||
+                      (classItem.createdByUserId && classItem.createdByUserId.toString() === userProfile._id.toString())
+                    ))) && (
                       <button
                         className="btn btn-danger btn-sm"
                         onClick={() => {

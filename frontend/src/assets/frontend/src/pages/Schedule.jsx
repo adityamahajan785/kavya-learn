@@ -1110,7 +1110,10 @@ function Schedule() {
                         Remind
                       </button>
                     )}
-                    {(userRole === 'instructor' || userRole === 'admin') && userProfile && userProfile._id && classItem.createdByUserId && classItem.createdByUserId.toString() === userProfile._id.toString() && (
+                    {(userRole === 'admin' || (userRole === 'instructor' && userProfile && userProfile._id && (
+                      (classItem.instructorId && classItem.instructorId.toString() === userProfile._id.toString()) ||
+                      (classItem.createdByUserId && classItem.createdByUserId.toString() === userProfile._id.toString())
+                    ))) && (
                       <button
                         className="btn btn-danger btn-sm"
                         onClick={() => {
