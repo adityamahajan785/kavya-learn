@@ -61,7 +61,9 @@ const createEvent = asyncHandler(async (req, res) => {
         endTime,
         location,
         maxStudents,
-        course
+        course,
+        createdByUserId: req.user._id,
+        createdByRole: req.user.role
     });
 
     if (event) {
@@ -208,6 +210,12 @@ const deleteEvent = asyncHandler(async (req, res) => {
     } 
     // Instructor can only soft-delete (mark as deletedByRole: 'instructor')
     else if (req.user.role === 'instructor') {
+        // Instructor may only delete events they created (instructor field)
+        const ownerId = event.instructor && event.instructor.toString ? event.instructor.toString() : (event.instructor || '').toString();
+        if (ownerId !== req.user._id.toString()) {
+            res.status(403);
+            throw new Error('Forbidden: instructors can only delete their own events');
+        }
         // Instructor soft-deletes - event is hidden from instructor and student panels but visible to admin
         event.deletedByRole = 'instructor';
         await event.save();
