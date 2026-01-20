@@ -37,7 +37,6 @@ export default function Profile() {
   const [profile, setProfile] = useState({
     initials: "",
     name: "",
-    badge: "Premium Member",
     bio: "Passionate learner exploring web development and computer science. On a mission to master full-stack development!",
     email: "",
     phone: "+91 ",
@@ -515,7 +514,6 @@ export default function Profile() {
             <div className="profile-main">
               <div className="profile-main-row">
                 <h2 className="profile-name">{profile.name}</h2>
-                <span className="badge">{profile.badge}</span>
               </div>
 
               <p className="profile-bio">{profile.bio}</p>
