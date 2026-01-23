@@ -3349,6 +3349,63 @@ export default function Courses() {
                   </div>
                 </div>
               ))}
+
+              {/* Lessons Section */}
+              {courseLessons && courseLessons.length > 0 && (
+                <div className="mt-5">
+                  <h5 className="mb-4 fw-bold">
+                    <i className="bi bi-book me-2"></i>Course Lessons
+                  </h5>
+                  <div className="row g-4">
+                    {courseLessons.map((lesson, index) => (
+                      <div key={lesson._id || index} className="col-md-6 col-lg-4">
+                        <div className="card lesson-card h-100 rounded-3 shadow-sm" style={{ border: '1px solid #e0e0e0' }}>
+                          <div className="card-body d-flex flex-column">
+                            <div className="d-flex justify-content-between align-items-start mb-3">
+                              <h6 className="card-title mb-0 flex-grow-1">{lesson.title}</h6>
+                              {lesson.duration && (
+                                <span className="badge bg-light text-dark ms-2" style={{ whiteSpace: 'nowrap' }}>
+                                  <i className="bi bi-clock-history me-1"></i>{lesson.duration} min
+                                </span>
+                              )}
+                            </div>
+                            
+                            {lesson.description && (
+                              <p className="mb-3" style={{ color: '#555', fontSize: '0.9rem', lineHeight: '1.4' }}>
+                                {lesson.description}
+                              </p>
+                            )}
+                            
+                            {lesson.content && (
+                              <div className="mb-3" style={{ maxHeight: '80px', overflow: 'hidden' }}>
+                                <small className="text-muted d-block mb-1"><strong>Content:</strong></small>
+                                <small className="text-muted" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                  {lesson.content.substring(0, 150)}
+                                  {lesson.content.length > 150 ? '...' : ''}
+                                </small>
+                              </div>
+                            )}
+                            
+                            <div className="mt-auto pt-3">
+                              {lesson.videoUrl && (
+                                <button
+                                  className="btn btn-sm btn-outline-primary w-100"
+                                  onClick={() => {
+                                    setActiveLessonVideo(lesson.videoUrl);
+                                    setActiveLessonTitle(lesson.title);
+                                  }}
+                                >
+                                  <i className="bi bi-play-circle me-1"></i>Watch Video
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
