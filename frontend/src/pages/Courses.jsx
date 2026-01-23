@@ -582,7 +582,6 @@ function InstructorForm({ addInstructor, toggleForm }) {
 
 function ReviewForm({ addReview, toggleForm }) {
   const [name, setName] = useState("");
-  const [rating, setRating] = useState(5);
   const [text, setText] = useState("");
 
   const handleSubmit = (e) => {
@@ -590,7 +589,6 @@ function ReviewForm({ addReview, toggleForm }) {
     const newReview = {
       id: Date.now(),
       name,
-      rating: parseInt(rating),
       text,
       avatar: name.substring(0, 2).toUpperCase(),
     };
@@ -610,33 +608,16 @@ function ReviewForm({ addReview, toggleForm }) {
         </button>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="row mb-3">
-          <div className="col-md-6">
-            <label className="form-label small muted">Student Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Alex"
-              required
-            />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label small muted">Rating (1-5)</label>
-            <select
-              className="form-select"
-              value={rating}
-              onChange={(e) => setRating(e.target.value)}
-              required
-            >
-              {[5, 4, 3, 2, 1].map((r) => (
-                <option key={r} value={r}>
-                  {r} Star
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="mb-3">
+          <label className="form-label small muted">Student Name</label>
+          <input
+            type="text"
+            className="form-control"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Alex"
+            required
+          />
         </div>
 
         <div className="mb-3">
@@ -2078,24 +2059,60 @@ export default function Courses() {
   };
 
   const addReview = (newReview) => {
-    setReviews((prevReviews) => [newReview, ...prevReviews]); // Newest first
+    setReviews((prevReviews) => {
+      const allReviews = [newReview, ...prevReviews];
+      
+      // Calculate average rating from all reviews that have a rating
+      const reviewsWithRating = allReviews.filter(r => typeof r.rating === 'number');
+      if (reviewsWithRating.length > 0) {
+        const totalRating = reviewsWithRating.reduce((sum, r) => sum + r.rating, 0);
+        const avgRating = Math.round(totalRating / reviewsWithRating.length);
+        setCourseRating(avgRating);
+      }
+      
+      return allReviews;
+    });
   };
 
   const editReview = (reviewId, updatedData) => {
-    setReviews((prevReviews) =>
-      prevReviews.map((review) =>
+    setReviews((prevReviews) => {
+      const updatedReviews = prevReviews.map((review) =>
         review.id === reviewId ? { ...review, ...updatedData } : review
-      )
-    );
+      );
+      
+      // Recalculate average rating
+      const reviewsWithRating = updatedReviews.filter(r => typeof r.rating === 'number');
+      if (reviewsWithRating.length > 0) {
+        const totalRating = reviewsWithRating.reduce((sum, r) => sum + r.rating, 0);
+        const avgRating = Math.round(totalRating / reviewsWithRating.length);
+        setCourseRating(avgRating);
+      } else {
+        setCourseRating(0);
+      }
+      
+      return updatedReviews;
+    });
     setEditingReviewId(null);
     setEditFormData({ rating: 0, text: "" });
   };
 
   const deleteReview = (reviewId) => {
     if (window.confirm("Are you sure you want to delete this review?")) {
-      setReviews((prevReviews) =>
-        prevReviews.filter((r) => r.id !== reviewId)
-      );
+      setReviews((prevReviews) => {
+        const filteredReviews = prevReviews.filter((r) => r.id !== reviewId);
+        
+        // Recalculate average rating
+        const reviewsWithRating = filteredReviews.filter(r => typeof r.rating === 'number');
+        if (reviewsWithRating.length > 0) {
+          const totalRating = reviewsWithRating.reduce((sum, r) => sum + r.rating, 0);
+          const avgRating = Math.round(totalRating / reviewsWithRating.length);
+          setCourseRating(avgRating);
+        } else {
+          setCourseRating(0);
+        }
+        
+        return filteredReviews;
+      });
     }
   };
 
@@ -2985,7 +3002,7 @@ export default function Courses() {
                 </div>
                 <div>
                   <div className="stat-title">Course Rating</div>
-                  <div className="stat-value">{courseRating ? `${courseRating}/5.0` : '0/5.0'}</div>
+                  <div className="stat-value">{courseRating ? `${courseRating}/5` : '0/5'}</div>
                 </div>
               </div>
             </div>
@@ -3338,19 +3355,87 @@ export default function Courses() {
           {/* Reviews tab */}
           {tab === "reviews" && (
             <>
-              <button
-                className="btn btn-sm btn-primary mb-3 d-flex align-items-center gap-1"
-                onClick={() => setShowReviewForm(!showReviewForm)}
-              >
-                <i className="bi bi-chat-dots"></i> Add New Review
-              </button>
+              <div className="mb-4">
+                <h6 className="mb-3 fw-bold">Leave Your Feedback</h6>
+                
+                {/* Add New Review Section */}
+                <div className="mb-4">
+                  <button
+                    className="btn btn-sm btn-primary mb-3 d-flex align-items-center gap-1"
+                    onClick={() => setShowReviewForm(!showReviewForm)}
+                  >
+                    <i className="bi bi-chat-dots"></i> Add New Review
+                  </button>
 
-              {showReviewForm && (
-                <ReviewForm
-                  addReview={addReview}
-                  toggleForm={setShowReviewForm}
-                />
-              )}
+                  {showReviewForm && (
+                    <ReviewForm
+                      addReview={addReview}
+                      toggleForm={setShowReviewForm}
+                    />
+                  )}
+                </div>
+
+                {/* Add Rating Section - Separate */}
+                <div className="card p-4 rounded-3 mb-4" style={{ backgroundColor: '#f8f9ff', border: '2px dashed #2B6CB0' }}>
+                  <div className="d-flex align-items-center gap-2 mb-3">
+                    <i className="bi bi-star-fill" style={{ color: '#ffc107', fontSize: '20px' }}></i>
+                    <h6 className="mb-0">Quick Rating</h6>
+                  </div>
+                  <p className="text-muted small mb-3">Rate this course based on your experience</p>
+                  
+                  <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '8px', fontSize: '32px' }}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          className="btn p-0"
+                          onClick={() => {
+                            // Create a quick rating review
+                            const ratingTexts = {
+                              1: "Poor - Needs significant improvement",
+                              2: "Fair - Some good content but areas to improve",
+                              3: "Good - Decent course with helpful material",
+                              4: "Very Good - High quality content and instruction",
+                              5: "Excellent - Outstanding course, highly recommended!"
+                            };
+                            const newReview = {
+                              id: Date.now(),
+                              rating: star,
+                              text: ratingTexts[star],
+                              avatar: "★"
+                            };
+                            addReview(newReview);
+                            alert(`${star} star rating added!`);
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#ffc107',
+                            fontSize: '32px',
+                            transition: 'all 0.2s',
+                            opacity: 0.6,
+                            padding: 0
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.opacity = '1';
+                            e.target.style.transform = 'scale(1.2)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.opacity = '0.6';
+                            e.target.style.transform = 'scale(1)';
+                          }}
+                          title={`Rate ${star} star${star > 1 ? 's' : ''}`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                    <small className="text-muted">Click any star to add a quick rating</small>
+                  </div>
+                </div>
+              </div>
 
               <div className="reviews-container d-flex flex-wrap gap-3">
                 {reviews.map((review) => (
