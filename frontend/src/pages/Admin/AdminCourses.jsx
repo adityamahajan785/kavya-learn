@@ -165,9 +165,6 @@ const AdminCourses = () => {
                 <button title="Edit" className="btn btn-light" onClick={() => { setEditingCourse(c); setShowForm(true); }}>
                   <FaEdit />
                 </button>
-                <button title="Lessons" className="btn btn-light" onClick={() => { navigate(`/admin/lessons?courseId=${c._id}`); }}>
-                  <FaBook />
-                </button>
                 <button title="Delete" className="btn btn-danger" onClick={() => handleDeleteCourse(c._id, c.title)} disabled={deleting === c._id}>
                   <FaTrash />
                 </button>
