@@ -28,6 +28,7 @@ import AdminNotes from './pages/Admin/AdminNotes';
 import AdminSettings from './pages/Admin/AdminSettings';
 import AdminAnnouncements from './pages/Admin/AdminAnnouncements';
 import AdminLessons from './pages/Admin/AdminLessons';
+import AdminAttendance from './pages/Admin/AdminAttendance';
 import StudentAnnouncements from './pages/Student/Announcements';
 import InstructorAnnouncements from './pages/Instructor/Announcements';
 import ParentAnnouncements from './pages/Parent/Announcements';
@@ -38,6 +39,7 @@ import InstructorCourses from './pages/Instructor/InstructorCourses';
 import InstructorStudents from './pages/Instructor/InstructorStudents';
 import InstructorLessons from './pages/Instructor/InstructorLessons';
 import InstructorAnalytics from './pages/Instructor/InstructorAnalytics';
+import InstructorAttendance from './pages/Instructor/InstructorAttendance';
 // Student Pages
 import StudentDashboard from './pages/Student/StudentDashboard';
 import StudentCourses from './pages/Student/StudentCourses';
@@ -110,6 +112,7 @@ function Layout() {
           <Route path="/admin/notes" element={<ProtectedRoute requireAdmin={true}><AdminNotes /></ProtectedRoute>} />
           <Route path="/admin/settings" element={<ProtectedRoute requireAdmin={true}><AdminSettings /></ProtectedRoute>} />
           <Route path="/admin/announcements" element={<ProtectedRoute requireAdmin={true}><AdminAnnouncements /></ProtectedRoute>} />
+          <Route path="/admin/attendance" element={<ProtectedRoute requireAdmin={true}><AdminAttendance /></ProtectedRoute>} />
 
           {/* Instructor Routes */}
           <Route path="/instructor/dashboard" element={<ProtectedRoute requireRole="instructor"><InstructorDashboard /></ProtectedRoute>} />
@@ -118,6 +121,7 @@ function Layout() {
           <Route path="/instructor/students" element={<ProtectedRoute requireRole="instructor"><InstructorStudents /></ProtectedRoute>} />
           <Route path="/instructor/lessons" element={<ProtectedRoute requireRole="instructor"><InstructorLessons /></ProtectedRoute>} />
           <Route path="/instructor/analytics" element={<ProtectedRoute requireRole="instructor"><InstructorAnalytics /></ProtectedRoute>} />
+          <Route path="/instructor/attendance" element={<ProtectedRoute requireRole="instructor"><InstructorAttendance /></ProtectedRoute>} />
           <Route path="/instructor/announcements" element={<ProtectedRoute requireRole="instructor"><InstructorAnnouncements /></ProtectedRoute>} />
 
           {/* Student Routes */}

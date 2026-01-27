@@ -297,7 +297,85 @@ export async function getInstructors() {
   return [];
 }
 
-// ===== Student dashboard feed (live, upcoming, notifications, announcements) =====
+// ===== Attendance Management =====
+
+export async function createAttendance(payload) {
+  const res = await fetch(`${BASE}/attendance`, { 
+    method: 'POST', 
+    headers: authHeaders(), 
+    body: JSON.stringify(payload) 
+  });
+  return res.json();
+}
+
+export async function getAttendance(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.eventId) params.append('eventId', filters.eventId);
+  if (filters.courseId) params.append('courseId', filters.courseId);
+  if (filters.startDate) params.append('startDate', filters.startDate);
+  if (filters.endDate) params.append('endDate', filters.endDate);
+  if (filters.status) params.append('status', filters.status);
+  if (filters.page) params.append('page', filters.page);
+  if (filters.limit) params.append('limit', filters.limit);
+  
+  const url = params.toString() ? `${BASE}/attendance?${params}` : `${BASE}/attendance`;
+  const res = await fetch(url, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function getEventAttendance(eventId) {
+  const res = await fetch(`${BASE}/attendance/event/${eventId}`, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function getCourseAttendance(courseId, filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.startDate) params.append('startDate', filters.startDate);
+  if (filters.endDate) params.append('endDate', filters.endDate);
+  
+  const url = params.toString() ? `${BASE}/attendance/course/${courseId}?${params}` : `${BASE}/attendance/course/${courseId}`;
+  const res = await fetch(url, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function getStudentAttendanceSummary(studentId, filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.courseId) params.append('courseId', filters.courseId);
+  if (filters.startDate) params.append('startDate', filters.startDate);
+  if (filters.endDate) params.append('endDate', filters.endDate);
+  
+  const url = params.toString() ? `${BASE}/attendance/student/${studentId}/summary?${params}` : `${BASE}/attendance/student/${studentId}/summary`;
+  const res = await fetch(url, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function updateAttendance(attendanceId, payload) {
+  const res = await fetch(`${BASE}/attendance/${attendanceId}`, { 
+    method: 'PUT', 
+    headers: authHeaders(), 
+    body: JSON.stringify(payload) 
+  });
+  return res.json();
+}
+
+export async function deleteAttendance(attendanceId) {
+  const res = await fetch(`${BASE}/attendance/${attendanceId}`, { 
+    method: 'DELETE', 
+    headers: authHeaders() 
+  });
+  return res.json();
+}
+
+export async function bulkCreateAttendance(records) {
+  const res = await fetch(`${BASE}/attendance/bulk`, { 
+    method: 'POST', 
+    headers: authHeaders(), 
+    body: JSON.stringify({ records }) 
+  });
+  return res.json();
+}
+
+// ===== Student dashboard feed (live, upcoming, notifications, announcements) ======
 
 
 export default {
@@ -318,8 +396,16 @@ export default {
   uploadProfilePhoto,
   deleteProfilePhoto,
   updateProfile,
-  getStreak
-  ,getUpcomingClasses
-  ,getDashboardFeed
-  ,getInstructors
+  getStreak,
+  getUpcomingClasses,
+  getDashboardFeed,
+  getInstructors,
+  createAttendance,
+  getAttendance,
+  getEventAttendance,
+  getCourseAttendance,
+  getStudentAttendanceSummary,
+  updateAttendance,
+  deleteAttendance,
+  bulkCreateAttendance
 };
