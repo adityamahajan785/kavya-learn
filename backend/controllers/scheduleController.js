@@ -65,11 +65,15 @@ exports.getUpcomingClasses = async (req, res) => {
     const userId = req.user.id || req.user._id;
     const now = new Date();
 
-    // Find events where the user is enrolled and the event is in the future and scheduled
+    // Find events where the user is either instructor or enrolled student
+    // Include future events that are scheduled or in progress
     const query = {
-      enrolledStudents: userId,
+      $or: [
+        { instructor: userId },  // User is the instructor
+        { enrolledStudents: userId }  // User is enrolled
+      ],
       date: { $gte: now },
-      status: 'Scheduled',
+      status: { $in: ['Scheduled', 'In Progress'] }  // Include both scheduled and in-progress
     };
 
     const limit = parseInt(req.query.limit, 10) || 20;
@@ -77,12 +81,23 @@ exports.getUpcomingClasses = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const [events, total] = await Promise.all([
-      Event.find(query).sort({ date: 1 }).limit(limit).skip(skip).lean(),
+      Event.find(query)
+        .populate('instructor', 'fullName email name avatar')
+        .populate('course', 'title code')
+        .sort({ date: 1 })
+        .limit(limit)
+        .skip(skip),
       Event.countDocuments(query),
     ]);
 
     // If no events, return count 0 and empty list (prevents empty UI)
-    res.status(200).json({ success: true, upcomingCount: total || 0, upcoming: events || [], page, pages: Math.ceil((total || 0) / limit) });
+    res.status(200).json({ 
+      success: true, 
+      upcomingCount: total || 0, 
+      upcoming: events || [], 
+      page, 
+      pages: Math.ceil((total || 0) / limit) 
+    });
   } catch (error) {
     console.error('Error fetching upcoming classes:', error);
     res.status(500).json({ success: false, message: 'Error fetching upcoming classes' });

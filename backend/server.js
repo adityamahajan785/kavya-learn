@@ -128,6 +128,7 @@ const parentRoutes = require('./routes/parentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
+const attendanceRoutes = require('./routes/attendanceRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 
@@ -151,6 +152,7 @@ app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/parents', parentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/schedule', scheduleRoutes);
+app.use('/api/attendance', attendanceRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/uploads', uploadRoutes);
 

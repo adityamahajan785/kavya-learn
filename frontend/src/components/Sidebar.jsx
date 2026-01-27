@@ -10,7 +10,7 @@ import {
   LuGalleryHorizontalEnd,
 } from "react-icons/lu";
 import { TbReportAnalytics } from "react-icons/tb";
-import { MdSchool, MdMessage, MdCreditCard, MdAnnouncement, MdSettings, MdPeople, MdPerson, MdCastForEducation, MdFamilyRestroom, MdEditDocument } from "react-icons/md";
+import { MdSchool, MdMessage, MdCreditCard, MdAnnouncement, MdSettings, MdPeople, MdPerson, MdCastForEducation, MdFamilyRestroom, MdEditDocument, MdAssignment } from "react-icons/md";
 import { MdAutoStories } from "react-icons/md";
 import { AiOutlineBook } from "react-icons/ai";
 import logo from "../assets/logo.png";
@@ -116,6 +116,7 @@ function Sidebar({ isOpen, setIsOpen }) {
       { path: "/admin/instructors", label: "Manage Instructors", icon: <MdCastForEducation /> },
       { path: "/admin/courses", label: "Manage Courses", icon: <AiOutlineBook /> },
       { path: "/admin/notes", label: "Notes", icon: <LuGalleryHorizontalEnd /> },
+      { path: "/admin/attendance", label: "Attendance", icon: <MdAssignment /> },
     ] : []),
     
     // Instructor items
@@ -126,6 +127,7 @@ function Sidebar({ isOpen, setIsOpen }) {
       { path: "/instructor/students", label: "Students", icon: <MdPerson/> },
       { path: "/instructor/lessons", label: "Manage Lessons", icon: <MdAutoStories /> },
       { path: "/instructor/analytics", label: "Analytics", icon: <TbReportAnalytics /> },
+      { path: "/instructor/attendance", label: "Attendance", icon: <MdAssignment /> },
       { path: "/instructor/announcements", label: "Announcements", icon: <MdAnnouncement /> },
     ] : []),
     
