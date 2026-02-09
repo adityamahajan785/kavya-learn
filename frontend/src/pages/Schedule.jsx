@@ -1891,25 +1891,53 @@ function Schedule() {
       if (!evt) return;
       // If event exists on server, request deletion
       if (evt._id) {
-        const token = localStorage.getItem('token');
-        const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
-        const url = API_BASE ? `${API_BASE.replace(/\/$/, '')}/api/events/${evt._id}` : `/api/events/${evt._id}`;
+        // Only call server delete when _id looks like a Mongo ObjectId
+        const isObjectIdLike = (id) => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
+        if (!isObjectIdLike(evt._id)) {
+          console.warn('Skipping server delete: invalid event id', evt._id);
+        } else {
+          // Prefer axiosClient to respect baseURL and auth interceptor
+          try {
+            await axiosClient.delete(`/api/events/${evt._id}`);
+          } catch (axErr) {
+            // If server says not found, proceed to remove locally so UI isn't blocked
+            const status = axErr && axErr.response && axErr.response.status;
+            if (status === 404) {
+              console.warn('Event not found on server, will remove locally:', evt._id);
+            } else {
+              // Fallback to fetch if axios fails for some other reason
+              try {
+                const token = localStorage.getItem('token');
+                const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+                const url = API_BASE ? `${API_BASE.replace(/\/$/, '')}/api/events/${evt._id}` : `/api/events/${evt._id}`;
+                const res = await fetch(url, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token ? `Bearer ${token}` : undefined,
+                  },
+                });
+                if (!res.ok) {
+                  const data = await res.json().catch(() => ({}));
+                  // If 404, allow local removal; otherwise show error and abort
+                  if (res.status === 404) {
+                    console.warn('Fetch returned 404, will remove locally:', evt._id);
+                  } else {
+                    alert(data.message || 'Failed to delete event');
+                    return;
+                  }
+                }
+              } catch (fallbackErr) {
+                console.warn('Both axios and fetch delete failed', axErr, fallbackErr);
+                alert('Failed to delete event. Please try again or contact support.');
+                return;
+              }
+            }
+          }
 
-        const res = await fetch(url, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: token ? `Bearer ${token}` : undefined,
-          },
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          alert(data.message || 'Failed to delete event');
-          return;
-        }
           // Refresh authoritative list after deleting to avoid stale UI
           try { await fetchUpcomingClasses(); } catch (e) { console.warn('Failed to refresh classes after delete', e); }
+        }
       }
 
       // Remove locally (from state and localStorage) using normalized id comparison
