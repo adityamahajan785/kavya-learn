@@ -1,43 +1,35 @@
 pipeline {
     agent any
 
-    environment {
-        PROJECT_DIR = "/root/kavya-learn"
-    }
-
     stages {
 
-        stage('Pull Latest Code') {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Stop Old Containers') {
             steps {
                 sh '''
-                cd $PROJECT_DIR
-                git checkout master
-                git pull origin master
+                docker compose down || true
                 '''
             }
         }
 
-        stage('Stop Existing Containers') {
+        stage('Build & Deploy Containers') {
             steps {
                 sh '''
-                cd $PROJECT_DIR
-                docker compose down
-                '''
-            }
-        }
-
-        stage('Build & Start Containers') {
-            steps {
-                sh '''
-                cd $PROJECT_DIR
                 docker compose up -d --build
                 '''
             }
         }
 
-        stage('Verify Deployment') {
+        stage('Verify Running Containers') {
             steps {
-                sh 'docker ps'
+                sh '''
+                docker ps
+                '''
             }
         }
     }
