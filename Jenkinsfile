@@ -9,6 +9,14 @@ pipeline {
             }
         }
 
+        stage('Copy ENV File') {
+            steps {
+                sh '''
+                cp /root/kavya-learn/backend/.env backend/.env
+                '''
+            }
+        }
+
         stage('Stop Old Containers') {
             steps {
                 sh '''
