@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_DIR = "/opt/kavya-learn"
+        PROJECT_DIR = "/root/kavya-learn"
     }
 
     stages {
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 sh '''
                 cd $PROJECT_DIR
-                docker compose down || true
+                docker compose down
                 '''
             }
         }
@@ -35,19 +35,10 @@ pipeline {
             }
         }
 
-        stage('Verify Running Containers') {
+        stage('Verify Deployment') {
             steps {
                 sh 'docker ps'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Deployment completed successfully!'
-        }
-        failure {
-            echo 'Deployment failed. Check logs.'
         }
     }
 }
