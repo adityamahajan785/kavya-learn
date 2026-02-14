@@ -12,7 +12,7 @@ pipeline {
         stage('Copy ENV File') {
             steps {
                 sh '''
-                cp /root/kavya-learn/backend/.env backend/.env
+                cp /opt/env/kavya.env backend/.env
                 '''
             }
         }
@@ -35,10 +35,9 @@ pipeline {
 
         stage('Verify Running Containers') {
             steps {
-                sh '''
-                docker ps
-                '''
+                sh 'docker ps'
             }
         }
     }
 }
+
